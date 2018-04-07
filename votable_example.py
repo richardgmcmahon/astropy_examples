@@ -63,10 +63,44 @@ print()
 
 
 t0 = time.time()
-outfile = 'table.vot'
+outfile = 'table_binary.vot'
 print('Write:', outfile)
 table.write(outfile, table_id='example_table',
             format='votable',  tabledata_format='binary',
+            overwrite=True)
+print('Elapsed time(secs):', time.time() - t0)
+print()
+
+t0 = time.time()
+infile = outfile
+print('Read:', infile)
+input = Table.read(infile)
+print('Elapsed time(secs):', time.time() - t0)
+print()
+
+
+t0 = time.time()
+outfile = 'table_binary2.vot'
+print('Write:', outfile)
+table.write(outfile, table_id='example_table',
+            format='votable',  tabledata_format='binary2',
+            overwrite=True)
+print('Elapsed time(secs):', time.time() - t0)
+print()
+
+t0 = time.time()
+infile = outfile
+print('Read:', infile)
+input = Table.read(infile)
+print('Elapsed time(secs):', time.time() - t0)
+print()
+
+
+t0 = time.time()
+outfile = 'table_ascii.vot'
+print('Write:', outfile)
+table.write(outfile, table_id='example_table',
+            format='votable',
             overwrite=True)
 print('Elapsed time(secs):', time.time() - t0)
 print()
