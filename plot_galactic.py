@@ -72,19 +72,21 @@ def mk_random_galaxy(size=(1000, 1000)):
 
 disk, bulge = mk_random_galaxy()
 
-figure = corner.corner(disk,
+make_cornerplot = False
+if make_cornerplot:
+    figure = corner.corner(disk,
                        labels=[r"$u$", r"$v$", r"$w$"])
-figure.suptitle('corner.py: mk_random_galaxy: disk')
+    figure.suptitle('corner.py: mk_random_galaxy: disk')
 
-plt.savefig('corner.png')
-plt.show()
+    plt.savefig('disk_corner.png')
+    plt.show()
 
-figure = corner.corner(bulge,
+    figure = corner.corner(bulge,
                        labels=[r"$u$", r"$v$", r"$w$"])
-figure.suptitle('corner.py: mk_random_galaxy: bulge')
+    figure.suptitle('corner.py: mk_random_galaxy: bulge')
 
-plt.savefig('corner.png')
-plt.show()
+    plt.savefig('bulge_corner.png')
+    plt.show()
 
 
 
@@ -101,18 +103,35 @@ coords_disk = SkyCoord(disk,
                      representation='cartesian',
                      frame='galactic')
 print(coords_disk)
-coords_disk.representation_type = 'spherical'
+print(coords_disk.u)
+# print(coords_disk.lon)
+
+coords_disk.representation = 'spherical'
 print(coords_disk)
-print(np.min(coords_disk.u))
+print(coords_disk.l)
+print(coords_disk.b)
+
+coords_disk_ecliptic = coords_disk.transform_to(BarycentricTrueEcliptic)
+print(coords_disk_ecliptic)
+print(time.time() - t0)
+print(coords_disk_ecliptic.lon)
+print(coords_disk_ecliptic.lat)
+
+
+
+
 coords_disk_icrs = coords_disk.icrs
 print(coords_disk.icrs)
 coords_disk_icrs = coords_disk.galactic
 #SkyCoord_ICRS = SkyCoord.transform_to(ICRS)
 coords_disk_icrs_ra = coords_disk.icrs.ra
 coords_disk_icrs_dec = coords_disk.icrs.dec
-print(coords_disk_icrs.representation_component_names)
-print(ICRS().representation_info)
-print(Galactic().representation_info)
+
+# print(coords_disk_icrs.representation_component_names)
+# print(ICRS().representation_info)
+# print(Galactic().representation_info)
+
+
 # help(coords_disk_icrs)
 
 coords_disk_galactic = coords_disk.galactic
@@ -153,15 +172,17 @@ plt.legend()
 
 plt.subplots_adjust(top=0.90, bottom=0.0)
 
+plt.savefig('plot_galactic_radec.png')
 plt.show()
 
 
-# convert coordinates to radians and make sure they are between -pi and +pi
+# plot in Galactic coordinates
+coords_disk.representation = 'spherical'
+coords_bulge.representation = 'spherical'
 
 # convert coordinates to radians and make sure they are between -pi and +pi
-help(coords_disk)
-l_disk_rad = coords_disk.galactic.l.wrap_at(180 * u.deg).radian
-b_disk_rad = coords_disk.galactic.b.radian
+l_disk_rad = coords_disk.l.wrap_at(180 * u.deg).radian
+b_disk_rad = coords_disk.b.radian
 
 l_bulge_rad = coords_bulge.galactic.l.wrap_at(180 * u.deg).radian
 b_bulge_rad = coords_bulge.galactic.b.radian
@@ -171,8 +192,52 @@ plt.subplot(111, projection="aitoff")
 plt.suptitle("Aitoff projection of our random data")
 
 plt.grid(True)
-plt.plot(l_disk_rad, b_disk_rad, 'ob', markersize=2, alpha=0.3)
-plt.plot(l_bulge_rad, b_bulge_rad, 'or', markersize=2, alpha=0.3)
+plt.plot(l_disk_rad, b_disk_rad, 'ob', markersize=1, alpha=1.0)
+plt.plot(l_bulge_rad, b_bulge_rad, 'or', markersize=1, alpha=1.0)
+
+plt.xlabel('Galactic Longitude (l)')
+plt.ylabel('Galactic Latitute (b)')
+plt.legend()
+
 
 plt.subplots_adjust(top=0.90, bottom=0.0)
+
+plt.savefig('plot_galactic_galactic.png')
+plt.show()
+
+# now do Ecliptc
+coords_disk_ecliptic = coords_disk.transform_to(BarycentricTrueEcliptic)
+print(coords_disk_ecliptic)
+print(time.time() - t0)
+print(coords_disk_ecliptic.lon)
+print(coords_disk_ecliptic.lat)
+coords_bulge_ecliptic = coords_bulge.transform_to(BarycentricTrueEcliptic)
+
+# plot in Galactic coordinates
+# coords_disk.representation = 'spherical'
+# coords_bulge.representation = 'spherical'
+
+# convert coordinates to radians and make sure they are between -pi and +pi
+l_disk_rad = coords_disk_ecliptic.lon.wrap_at(180 * u.deg).radian
+b_disk_rad = coords_disk_ecliptic.lat.radian
+
+l_bulge_rad = coords_bulge_ecliptic.lon.wrap_at(180 * u.deg).radian
+b_bulge_rad = coords_bulge_ecliptic.lat.radian
+
+plt.figure(figsize=(8, 4.5))
+plt.subplot(111, projection="aitoff")
+plt.suptitle("Aitoff projection of our random data")
+
+plt.grid(True)
+plt.plot(l_disk_rad, b_disk_rad, 'ob', markersize=1, alpha=1.0)
+plt.plot(l_bulge_rad, b_bulge_rad, 'or', markersize=1, alpha=1.0)
+
+plt.xlabel('Ecliptic Longitude (lon)')
+plt.ylabel('Ecliptic Latitute (lat)')
+plt.legend()
+
+
+plt.subplots_adjust(top=0.90, bottom=0.0)
+
+plt.savefig('plot_galactic_ecliptic.png')
 plt.show()
