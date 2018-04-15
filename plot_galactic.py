@@ -5,7 +5,6 @@ http://docs.astropy.org/en/v1.3.3//coordinates/skycoord.html#example-2-plotting-
 http://docs.astropy.org/en/stable/coordinates/skycoord.html#example-2-plotting-star-positions-in-bulge-and-disk
 
 
-
 """
 import sys
 import time
@@ -166,8 +165,8 @@ plt.plot(ra_bulge_rad, dec_bulge_rad, 'or',
          markersize=2, alpha=0.5,
          label='bulge')
 
-plt.xlabel('Right Ascension (ra)')
-plt.ylabel('Declination (dec)')
+plt.xlabel('Right Ascension (ra) [degree] {ICRS}')
+plt.ylabel('Declination (dec) [degree]' {ICRS})
 plt.legend()
 
 plt.subplots_adjust(top=0.90, bottom=0.0)
