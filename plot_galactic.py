@@ -166,8 +166,8 @@ plt.plot(ra_bulge_rad, dec_bulge_rad, 'or',
          markersize=2, alpha=0.5,
          label='bulge')
 
-plt.xlabel('RA')
-plt.ylabel('Dec')
+plt.xlabel('Right Ascension (ra)')
+plt.ylabel('Declination (dec)')
 plt.legend()
 
 plt.subplots_adjust(top=0.90, bottom=0.0)
